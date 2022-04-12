@@ -13,11 +13,11 @@ const options = [
   },
   {
     id: 3,
-    text: 'Education Level',
+    text: 'Education',
   },
   {
     id: 4,
-    text: 'Income Level',
+    text: 'Household Income',
   },
   {
     id: 5,
@@ -25,11 +25,11 @@ const options = [
   },
   {
     id: 6,
-    text: 'Time Poor Status',
+    text: 'Time Poverty Status',
   },
   {
     id: 7,
-    text: 'Car User',
+    text: 'Main Mode of Transportation',
   },
 ];
 
@@ -55,14 +55,14 @@ const filters = {
     { text: 'Black', id: 'black', value: '1.0' },
     { text: 'Asian', id: 'asian', value: '1.0' },
   ],
-  'Education Level': [
+  Education: [
     { text: 'Less than High School', id: 'less_than_hs', value: '1.0' },
     { text: 'High School Graduate', id: 'hs_grad', value: '1.0' },
     { text: 'Associate Degree', id: 'some_col_assc_deg', value: '1.0' },
     { text: 'Bachelor Degree', id: 'bachelor', value: '1.0' },
     { text: 'Graduate School', id: 'grad_sch', value: '1.0' },
   ],
-  'Income Level': [
+  'Household Income': [
     { text: 'Less than 35k', id: 'inc_up35', value: '1.0' },
     { text: '35K-50K', id: 'inc_35_50', value: '1.0' },
     { text: '50KK-75K', id: 'inc_50_75', value: '1.0' },
@@ -73,25 +73,22 @@ const filters = {
     { text: 'Employed', id: 'employed', value: '1.0' },
     { text: 'Unemployed', id: 'employed', value: '0.0' },
   ],
-  'Time Poor Status': [
+  'Time Poverty Status': [
     { text: 'Time Poor', id: 'time_poor', value: '1.0' },
     { text: 'Not Time Poor', id: 'time_poor', value: '1.0' },
   ],
-  'Car User': [
+  'Main Mode of Transportation': [
     { text: 'Car User', id: 'car_user', value: '1.0' },
-    { text: 'Not a car user', id: 'car_user', value: '0.0' },
+    { text: 'Other', id: 'car_user', value: '0.0' },
   ],
 };
 
 document.addEventListener('DOMContentLoaded', function () {
   Promise.resolve(d3.csv('data/df.csv')).then((data) => {
     globalData = data;
-    $('.js-example-basic-one').select2({
+    $('.js-example-basic-single').select2({
       placeholder: 'Select upto 3 filters...',
       data: options,
-    });
-    $('.js-example-basic-two').select2({
-      placeholder: 'Select a filter',
     });
     showFilters();
   });
