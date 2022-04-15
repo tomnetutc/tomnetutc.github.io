@@ -494,3 +494,25 @@ function plotUnWeighted(key) {
 
   Plotly.newPlot('unweighted-' + key, traces, layout);
 }
+
+function resetCharts(key) {
+  $('#options-selector-' + key)
+    .empty()
+    .trigger('change');
+  $('#options-selector-' + key)
+    .append(new Option())
+    .trigger('change');
+  $(`.js-example-basic-pf${key}-one`).select2({
+    placeholder: 'Select upto 3 attributes',
+    data: options,
+  });
+  $('#filters-selector-' + key)
+    .empty()
+    .trigger('change');
+  $('#filters-selector-' + key)
+    .append(new Option())
+    .trigger('change');
+  document.getElementById('selections-' + key).innerHTML = '';
+  $('#main-table-' + key).remove();
+  Plotly.purge('unweighted-' + key);
+}
