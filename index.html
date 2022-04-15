@@ -30,40 +30,96 @@
       <h1 class="display-5 fw-bold">Charts</h1>
       <div class="col-sm-12 mx-auto">
         <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+          <span>Profile 1</span>
           <select
-            class="js-example-basic-single"
+            class="js-example-basic-pf1-one"
             name="top-filters"
             style="width: 25%"
-            id="options-selector"
-            onchange="showFilters()"
-          ></select>
-          <select
-            class="js-example-basic-single"
-            name="filters"
-            style="width: 25%"
-            id="filters-selector"
-            onchange="showSelections()"
-          ></select>
-          <button
-            type="button"
-            class="btn btn-primary btn-sm"
-            onclick="showCharts()"
+            id="options-selector-1"
           >
-            Show Charts
-          </button>
+            <option value=""></option>
+          </select>
+          <select
+            class="js-example-basic-pf1-two"
+            style="width: 25%"
+            id="filters-selector-1"
+          >
+            <option value=""></option>
+          </select>
           <button
             type="button"
             class="btn btn-primary btn-sm"
-            onclick="resetCharts()"
+            onclick="resetCharts(1)"
           >
             Reset Charts
           </button>
         </div>
+        <div id="selections-1"></div>
       </div>
-      <span>Selections</span>
-      <div id="selections"></div>
-      <div id="weighted"></div>
-      <div id="unweighted"></div>
+      <br />
+      <div class="col-sm-12 mx-auto">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+          <span> Profile 2</span>
+          <select
+            class="js-example-basic-pf2-one"
+            name="top-filters"
+            style="width: 25%"
+            id="options-selector-2"
+          >
+            <option value=""></option>
+          </select>
+          <select
+            class="js-example-basic-pf2-two"
+            style="width: 25%"
+            id="filters-selector-2"
+          >
+            <option value=""></option>
+          </select>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            onclick="resetCharts(2)"
+          >
+            Reset Charts
+          </button>
+        </div>
+        <div id="selections-2"></div>
+      </div>
+      <br />
+      <div class="col-sm-12 mx-auto">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+          <span>Profile 3</span>
+          <select
+            class="js-example-basic-pf3-one"
+            name="top-filters"
+            style="width: 25%"
+            id="options-selector-3"
+          >
+            <option value=""></option>
+          </select>
+          <select
+            class="js-example-basic-pf3-two"
+            style="width: 25%"
+            id="filters-selector-3"
+          >
+            <option value=""></option>
+          </select>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            onclick="resetCharts(3)"
+          >
+            Reset Charts
+          </button>
+        </div>
+        <div id="selections-3"></div>
+      </div>
+      <div id="unweighted-1"></div>
+      <div id="table-1"></div>
+      <div id="unweighted-2"></div>
+      <div id="table-2"></div>
+      <div id="unweighted-3"></div>
+      <div id="table-3"></div>
     </div>
   </body>
 </html>
