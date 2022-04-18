@@ -1,5 +1,10 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
     <script
       src="https://code.jquery.com/jquery-3.6.0.js"
       integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
@@ -22,104 +27,32 @@
       href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+      integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+      crossorigin="anonymous"
+    ></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="index.js"></script>
   </head>
   <body>
     <div class="px-4 py-5 my-5 text-center container">
       <h1 class="display-5 fw-bold">Charts</h1>
-      <div class="col-sm-12 mx-auto">
-        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-          <span>Profile 1</span>
-          <select
-            class="js-example-basic-pf1-one"
-            name="top-filters"
-            style="width: 25%"
-            id="options-selector-1"
-          >
-            <option value=""></option>
-          </select>
-          <select
-            class="js-example-basic-pf1-two"
-            style="width: 25%"
-            id="filters-selector-1"
-          >
-            <option value=""></option>
-          </select>
-          <button
-            type="button"
-            class="btn btn-primary btn-sm"
-            onclick="resetCharts(1)"
-          >
-            Reset Charts
-          </button>
+      <div class="row" id="profiles">
+        <div class="col-3">
+          <div class="justify-content-md-center">
+            <div class="card border-0" style="width: 18rem">
+              <div class="card-body d-flex flex-column align-items-center">
+                <h5 class="card-title">Profile 0</h5>
+                <h4><span class="badge bg-info">All filters off</span></h4>
+              </div>
+            </div>
+          </div>
         </div>
-        <div id="selections-1"></div>
       </div>
-      <br />
-      <div class="col-sm-12 mx-auto">
-        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-          <span> Profile 2</span>
-          <select
-            class="js-example-basic-pf2-one"
-            name="top-filters"
-            style="width: 25%"
-            id="options-selector-2"
-          >
-            <option value=""></option>
-          </select>
-          <select
-            class="js-example-basic-pf2-two"
-            style="width: 25%"
-            id="filters-selector-2"
-          >
-            <option value=""></option>
-          </select>
-          <button
-            type="button"
-            class="btn btn-primary btn-sm"
-            onclick="resetCharts(2)"
-          >
-            Reset Charts
-          </button>
-        </div>
-        <div id="selections-2"></div>
-      </div>
-      <br />
-      <div class="col-sm-12 mx-auto">
-        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-          <span>Profile 3</span>
-          <select
-            class="js-example-basic-pf3-one"
-            name="top-filters"
-            style="width: 25%"
-            id="options-selector-3"
-          >
-            <option value=""></option>
-          </select>
-          <select
-            class="js-example-basic-pf3-two"
-            style="width: 25%"
-            id="filters-selector-3"
-          >
-            <option value=""></option>
-          </select>
-          <button
-            type="button"
-            class="btn btn-primary btn-sm"
-            onclick="resetCharts(3)"
-          >
-            Reset Charts
-          </button>
-        </div>
-        <div id="selections-3"></div>
-      </div>
-      <div id="unweighted-1"></div>
-      <div id="table-1"></div>
-      <div id="unweighted-2"></div>
-      <div id="table-2"></div>
-      <div id="unweighted-3"></div>
-      <div id="table-3"></div>
+      <div id="unweighted" class="chartStyle"></div>
+      <div id="table"></div>
     </div>
   </body>
 </html>

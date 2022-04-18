@@ -33,12 +33,6 @@ const options = [
   },
 ];
 
-let globalData;
-
-let selections1 = {};
-let selections2 = {};
-let selections3 = {};
-
 const filters = {
   Gender: [
     { text: 'Male', id: 'female', value: '0.0' },
@@ -85,139 +79,189 @@ const filters = {
   ],
 };
 
+let globalData;
+
+let selections = [];
+
+let traces = [];
+
+let years = [];
+
+const NUMBER_PROFILES = 3;
+
 document.addEventListener('DOMContentLoaded', function () {
   Promise.resolve(d3.csv('data/df.csv')).then((data) => {
     globalData = data;
-    $('.js-example-basic-pf1-one').select2({
-      placeholder: 'Select upto 3 attributes',
-      data: options,
-    });
-    $('.js-example-basic-pf1-two').select2({
-      placeholder: 'Select a level',
-    });
-    $('.js-example-basic-pf2-one').select2({
-      placeholder: 'Select upto 3 attributes',
-      data: options,
-    });
-    $('.js-example-basic-pf2-two').select2({
-      placeholder: 'Select a level',
-    });
-    $('.js-example-basic-pf3-one').select2({
-      placeholder: 'Select upto 3 attributes',
-      data: options,
-    });
-    $('.js-example-basic-pf3-two').select2({
-      placeholder: 'Select a level',
-    });
-  });
-  $('#options-selector-1').on('select2:select', function (e) {
-    $('#filters-selector-1').empty().trigger('change');
-    $('#filters-selector-1').append(new Option()).trigger('change');
-    const data = e.params.data;
-    filters[data.text].forEach((filter) => {
-      const option = {
-        id: filter.text,
-        text: filter.text,
-      };
-      const newOption = new Option(option.text, option.id, false, false);
-      $('#filters-selector-1').append(newOption).trigger('change');
-    });
-  });
+    selections.push({});
+    traces.push({});
 
-  $('#filters-selector-1').on('select2:select', function (e) {
-    const type = $('#options-selector-1').select2('data');
-    const data = e.params.data;
-    console.log(data);
-    const selectionsElement = document.getElementById('selections-1');
-    const filterElement = document.getElementById(type[0].text + '1');
-    if (filterElement) {
-      filterElement.innerText = data.text;
-    } else {
-      var aTag = document.createElement('button');
-      aTag.setAttribute('type', 'button');
-      aTag.setAttribute('id', type[0].text + '1');
-      aTag.setAttribute('class', 'btn bg-info text-dark m-2');
-      aTag.innerText = data.text;
-      selectionsElement.appendChild(aTag);
-    }
-    selections1[type[0].text] = filters[type[0].text].find(
-      (el) => el.text === data.text
+    const grouped_uwb = d3.rollup(
+      globalData,
+      (v) => d3.mean(v, (d) => d['norm_wb']),
+      (d) => d.year
     );
-    plotUnWeighted(1);
-  });
 
-  $('#options-selector-2').on('select2:select', function (e) {
-    $('#filters-selector-2').empty().trigger('change');
-    $('#filters-selector-2').append(new Option()).trigger('change');
-    const data = e.params.data;
-    filters[data.text].forEach((filter) => {
-      const option = {
-        id: filter.text,
-        text: filter.text,
-      };
-      const newOption = new Option(option.text, option.id, false, false);
-      $('#filters-selector-2').append(newOption).trigger('change');
-    });
-  });
-
-  $('#filters-selector-2').on('select2:select', function (e) {
-    const type = $('#options-selector-2').select2('data');
-    const data = e.params.data;
-    console.log(data);
-    const selectionsElement = document.getElementById('selections-2');
-    const filterElement = document.getElementById(type[0].text + '2');
-    if (filterElement) {
-      filterElement.innerText = data.text;
-    } else {
-      var aTag = document.createElement('button');
-      aTag.setAttribute('type', 'button');
-      aTag.setAttribute('id', type[0].text + '2');
-      aTag.setAttribute('class', 'btn bg-info text-dark m-2');
-      aTag.innerText = data.text;
-      selectionsElement.appendChild(aTag);
-    }
-    selections2[type[0].text] = filters[type[0].text].find(
-      (el) => el.text === data.text
+    const group_count = d3.rollup(
+      globalData,
+      (d) => d.length,
+      (d) => d.year
     );
-    plotUnWeighted(2);
-  });
-  $('#options-selector-3').on('select2:select', function (e) {
-    $('#filters-selector-3').empty().trigger('change');
-    $('#filters-selector-3').append(new Option()).trigger('change');
-    const data = e.params.data;
-    filters[data.text].forEach((filter) => {
-      const option = {
-        id: filter.text,
-        text: filter.text,
-      };
-      const newOption = new Option(option.text, option.id, false, false);
-      $('#filters-selector-3').append(newOption).trigger('change');
-    });
-  });
 
-  $('#filters-selector-3').on('select2:select', function (e) {
-    const type = $('#options-selector-3').select2('data');
-    const data = e.params.data;
-    const selectionsElement = document.getElementById('selections-3');
-    const filterElement = document.getElementById(type[0].text + '3');
-    if (filterElement) {
-      filterElement.innerText = data.text;
-    } else {
-      var aTag = document.createElement('button');
-      aTag.setAttribute('type', 'button');
-      aTag.setAttribute('id', type[0].text + '3');
-      aTag.setAttribute('class', 'btn bg-info text-dark m-2');
-      aTag.innerText = data.text;
-      selectionsElement.appendChild(aTag);
+    const values = [...grouped_uwb.values()];
+    years = [...grouped_uwb.keys()];
+    generateTraces(0, values);
+
+    for (let i = 1; i <= NUMBER_PROFILES; i++) {
+      selections.push({});
+      traces.push({});
+      const colDiv = document.createElement('div');
+      colDiv.setAttribute('class', 'col-3 justify-content-md-center');
+
+      const cardDiv = document.createElement('div');
+      cardDiv.setAttribute('class', 'card border-0');
+
+      colDiv.appendChild(cardDiv);
+
+      const cardBody = document.createElement('div');
+      cardBody.setAttribute(
+        'class',
+        'card-body d-flex flex-column align-items-center'
+      );
+
+      cardDiv.appendChild(cardBody);
+
+      const title = document.createElement('h5');
+      title.setAttribute('class', 'card-title');
+      title.appendChild(document.createTextNode(`Profile ${i}`));
+
+      const createButton = document.createElement('button');
+      createButton.setAttribute('class', 'btn btn-primary w-100');
+      createButton.setAttribute('onclick', `createProfile(${i})`);
+      createButton.setAttribute('id', `create-profile-btn-${i}`);
+      createButton.appendChild(document.createTextNode('Create'));
+
+      const optionsDiv = document.createElement('div');
+      optionsDiv.setAttribute('id', `profile-options-${i}`);
+      optionsDiv.setAttribute(
+        'class',
+        'd-flex flex-column align-items-center invisible w-100 gap-3 stylePosition'
+      );
+
+      const optionsSelector = document.createElement('select');
+      optionsSelector.setAttribute('id', `options-selector-${i}`);
+      optionsSelector.setAttribute('class', 'w-100 my-3');
+
+      const filtersSelector = document.createElement('select');
+      filtersSelector.setAttribute('id', `filters-selector-${i}`);
+      filtersSelector.setAttribute('class', 'w-100');
+
+      const blankOption = document.createElement('option');
+      blankOption.setAttribute('value', '');
+
+      filtersSelector.appendChild(blankOption);
+
+      const removeButton = document.createElement('button');
+      removeButton.setAttribute('class', 'btn btn-primary w-100');
+      removeButton.setAttribute('onclick', `removeProfile(${i})`);
+      removeButton.setAttribute('id', `remove-profile-btn-${i}`);
+      removeButton.appendChild(document.createTextNode('Remove'));
+
+      const selectionsDiv = document.createElement('div');
+      selectionsDiv.setAttribute('id', `selections-${i}`);
+      selectionsDiv.setAttribute(
+        'class',
+        'd-flex justify-content-around flex-wrap'
+      );
+
+      optionsDiv.appendChild(optionsSelector);
+      optionsDiv.appendChild(filtersSelector);
+      optionsDiv.appendChild(removeButton);
+      optionsDiv.appendChild(selectionsDiv);
+
+      cardBody.appendChild(title);
+      cardBody.appendChild(createButton);
+      cardBody.appendChild(optionsDiv);
+
+      const profilesDiv = document.getElementById('profiles');
+      profilesDiv.appendChild(colDiv);
+
+      $(`#options-selector-${i}`).select2({
+        placeholder: 'Select upto 3 attributes',
+        data: options,
+      });
+
+      optionsSelector.appendChild(blankOption);
+
+      $(`#filters-selector-${i}`).select2({
+        placeholder: 'Select a level',
+      });
+
+      $(`#options-selector-${i}`).on('select2:select', function (e) {
+        createFilters(i, e.params.data['text']);
+      });
+
+      $(`#filters-selector-${i}`).on('select2:select', function (e) {
+        const type = $(`#options-selector-${i}`).select2('data');
+        const data = e.params.data;
+        const selectionsElement = document.getElementById(`selections-${i}`);
+        const filterElement = document.getElementById(`${type[0].text}-${i}`);
+        if (filterElement) {
+          filterElement.innerText = data.text;
+          let alertButton = document.createElement('button');
+          alertButton.setAttribute('type', 'button');
+          alertButton.setAttribute(
+            'class',
+            'btn-close filterAlertCloseBtn p-0'
+          );
+          alertButton.setAttribute('data-bs-dismiss', 'alert');
+          alertButton.setAttribute(
+            'onclick',
+            'removeFilter(this.parentNode.id)'
+          );
+          filterElement.appendChild(alertButton);
+        } else {
+          let alertDiv = document.createElement('div');
+          alertDiv.setAttribute('id', `${type[0].text}-${i}`);
+          alertDiv.setAttribute(
+            'class',
+            'alert alert-primary alert-dismissible fade show filterAlertDiv m-1'
+          );
+          alertDiv.setAttribute('role', 'alert');
+          alertDiv.innerText = data.text;
+
+          selectionsElement.appendChild(alertDiv);
+          let alertButton = document.createElement('button');
+          alertButton.setAttribute('type', 'button');
+          alertButton.setAttribute(
+            'class',
+            'btn-close filterAlertCloseBtn p-0'
+          );
+          alertButton.setAttribute('data-bs-dismiss', 'alert');
+          alertButton.setAttribute(
+            'onclick',
+            'removeFilter(this.parentNode.id)'
+          );
+          alertDiv.appendChild(alertButton);
+        }
+        selections[i][type[0].text] = filters[type[0].text].find(
+          (el) => el.text === data.text
+        );
+        plotUnWeighted(i);
+      });
     }
-    selections3[type[0].text] = filters[type[0].text].find(
-      (el) => el.text === data.text
-    );
-    plotUnWeighted(3);
   });
 });
 
-function resetCharts() {}
+function createProfile(key) {
+  $(`#create-profile-btn-${key}`).addClass('invisible');
+  $(`#profile-options-${key}`).removeClass('invisible');
+}
+
+function removeProfile(key) {
+  $(`#create-profile-btn-${key}`).removeClass('invisible');
+  $(`#profile-options-${key}`).addClass('invisible');
+  purgeCharts(key);
+}
 
 function plotWeighted() {
   var grouped_wb = d3.rollup(
@@ -270,209 +314,95 @@ function plotWeighted() {
 }
 
 function plotUnWeighted(key) {
-  console.log(key);
-  let graphName = '';
-  if (key == 1) {
-    var grouped_uwb = d3.rollup(
-      globalData,
-      (v) => d3.mean(v, (d) => d['norm_wb']),
-      (d) => {
-        return Object.keys(selections1)
-          .map((id) => {
-            return d[selections1[id]['id']] === selections1[id]['value'];
-          })
-          .reduce((prev, curr) => {
-            return prev && curr;
-          });
-      },
-      (d) => d.year
-    );
-    var group_count = d3.rollup(
-      globalData,
-      (d) => d.length,
-      (d) => {
-        return Object.keys(selections1)
-          .map((id) => {
-            return d[selections1[id]['id']] === selections1[id]['value'];
-          })
-          .reduce((prev, curr) => {
-            return prev && curr;
-          });
-      },
-      (d) => d.year
-    );
-    const years = [...group_count.get(true).keys()];
-    const values = [...group_count.get(true).values()];
-    const table1 = document.getElementById('table-1');
-    $('#main-table-1').remove();
-    const table = document.createElement('table');
-    table.setAttribute('class', 'table');
-    table.setAttribute('id', 'main-table-1');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
-    const th1 = document.createElement('th');
-    th1.setAttribute('scope', 'col');
-    th1.appendChild(document.createTextNode('Year'));
-    const th2 = document.createElement('th');
-    th2.setAttribute('scope', 'col');
-    th2.appendChild(document.createTextNode('Count'));
-    thead.appendChild(th1);
-    thead.appendChild(th2);
-    table.appendChild(thead);
-    for (let i = 0; i < years.length; i++) {
-      const tr = document.createElement('tr');
-      const th = document.createElement('th');
-      th.setAttribute('scope', 'row');
-      th.appendChild(document.createTextNode(years[i]));
-      const td = document.createElement('td');
-      td.appendChild(document.createTextNode(values[i]));
-      tr.appendChild(th);
-      tr.appendChild(td);
-      tbody.appendChild(tr);
-    }
-    table.appendChild(tbody);
-    table1.appendChild(table);
-    Object.keys(selections1).forEach((id, i) => {
-      graphName += (i == 0 ? '' : ', ') + selections1[id]['text'];
-    });
-  } else if (key == 2) {
-    var grouped_uwb = d3.rollup(
-      globalData,
-      (v) => d3.mean(v, (d) => d['norm_wb']),
-      (d) => {
-        return Object.keys(selections2)
-          .map((id) => {
-            return d[selections2[id]['id']] === selections2[id]['value'];
-          })
-          .reduce((prev, curr) => {
-            return prev && curr;
-          });
-      },
-      (d) => d.year
-    );
-    var group_count = d3.rollup(
-      globalData,
-      (d) => d.length,
-      (d) => {
-        return Object.keys(selections2)
-          .map((id) => {
-            return d[selections2[id]['id']] === selections2[id]['value'];
-          })
-          .reduce((prev, curr) => {
-            return prev && curr;
-          });
-      },
-      (d) => d.year
-    );
-    const years = [...group_count.get(true).keys()];
-    const values = [...group_count.get(true).values()];
-    const table2 = document.getElementById('table-2');
-    $('#main-table-2').remove();
-    const table = document.createElement('table');
-    table.setAttribute('class', 'table');
-    table.setAttribute('id', 'main-table-2');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
-    const th1 = document.createElement('th');
-    th1.setAttribute('scope', 'col');
-    th1.appendChild(document.createTextNode('Year'));
-    const th2 = document.createElement('th');
-    th2.setAttribute('scope', 'col');
-    th2.appendChild(document.createTextNode('Count'));
-    thead.appendChild(th1);
-    thead.appendChild(th2);
-    table.appendChild(thead);
-    for (let i = 0; i < years.length; i++) {
-      const tr = document.createElement('tr');
-      const th = document.createElement('th');
-      th.setAttribute('scope', 'row');
-      th.appendChild(document.createTextNode(years[i]));
-      const td = document.createElement('td');
-      td.appendChild(document.createTextNode(values[i]));
-      tr.appendChild(th);
-      tr.appendChild(td);
-      tbody.appendChild(tr);
-    }
-    table.appendChild(tbody);
-    table2.appendChild(table);
-    Object.keys(selections2).forEach((id, i) => {
-      graphName += (i == 0 ? '' : ', ') + selections2[id]['text'];
-    });
-  } else {
-    var grouped_uwb = d3.rollup(
-      globalData,
-      (v) => d3.mean(v, (d) => d['norm_wb']),
-      (d) => {
-        return Object.keys(selections3)
-          .map((id) => {
-            return d[selections3[id]['id']] === selections3[id]['value'];
-          })
-          .reduce((prev, curr) => {
-            return prev && curr;
-          });
-      },
-      (d) => d.year
-    );
-    var group_count = d3.rollup(
-      globalData,
-      (d) => d.length,
-      (d) => {
-        return Object.keys(selections3)
-          .map((id) => {
-            return d[selections3[id]['id']] === selections3[id]['value'];
-          })
-          .reduce((prev, curr) => {
-            return prev && curr;
-          });
-      },
-      (d) => d.year
-    );
-    const years = [...group_count.get(true).keys()];
-    const values = [...group_count.get(true).values()];
-    const table3 = document.getElementById('table-3');
-    $('#main-table-3').remove();
-    const table = document.createElement('table');
-    table.setAttribute('class', 'table');
-    table.setAttribute('id', 'main-table-3');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
-    const th1 = document.createElement('th');
-    th1.setAttribute('scope', 'col');
-    th1.appendChild(document.createTextNode('Year'));
-    const th2 = document.createElement('th');
-    th2.setAttribute('scope', 'col');
-    th2.appendChild(document.createTextNode('Count'));
-    thead.appendChild(th1);
-    thead.appendChild(th2);
-    table.appendChild(thead);
-    for (let i = 0; i < years.length; i++) {
-      const tr = document.createElement('tr');
-      const th = document.createElement('th');
-      th.setAttribute('scope', 'row');
-      th.appendChild(document.createTextNode(years[i]));
-      const td = document.createElement('td');
-      td.appendChild(document.createTextNode(values[i]));
-      tr.appendChild(th);
-      tr.appendChild(td);
-      tbody.appendChild(tr);
-    }
-    table.appendChild(tbody);
-    table3.appendChild(table);
-    Object.keys(selections3).forEach((id, i) => {
-      graphName += (i == 0 ? '' : ', ') + selections3[id]['text'];
-    });
-  }
-  var x = [...grouped_uwb.get(true).keys()];
-  var y = [...grouped_uwb.get(true).values()];
-  var traces = [
-    {
-      x,
-      y,
+  const grouped_uwb = d3.rollup(
+    globalData,
+    (v) => d3.mean(v, (d) => d['norm_wb']),
+    (d) => {
+      return Object.keys(selections[key])
+        .map((id) => {
+          return d[selections[key][id]['id']] === selections[key][id]['value'];
+        })
+        .reduce((prev, curr) => {
+          return prev && curr;
+        });
     },
-  ];
+    (d) => d.year
+  );
+  const group_count = d3.rollup(
+    globalData,
+    (d) => d.length,
+    (d) => {
+      return Object.keys(selections[key])
+        .map((id) => {
+          return d[selections[key][id]['id']] === selections[key][id]['value'];
+        })
+        .reduce((prev, curr) => {
+          return prev && curr;
+        });
+    },
+    (d) => d.year
+  );
+  const values = [...grouped_uwb.get(true).values()];
+  const counts = [...group_count.get(true).values()];
+  const table1 = document.getElementById('table');
+  $('#main-table-1').remove();
+  const table = document.createElement('table');
+  table.setAttribute('class', 'table');
+  table.setAttribute('id', 'main-table-1');
+  const thead = document.createElement('thead');
+  const tbody = document.createElement('tbody');
+  const th1 = document.createElement('th');
+  th1.setAttribute('scope', 'col');
+  th1.appendChild(document.createTextNode('Year'));
+  const th2 = document.createElement('th');
+  th2.setAttribute('scope', 'col');
+  th2.appendChild(document.createTextNode('Count'));
+  thead.appendChild(th1);
+  thead.appendChild(th2);
+  table.appendChild(thead);
+  for (let i = 0; i < years.length; i++) {
+    const tr = document.createElement('tr');
+    const th = document.createElement('th');
+    th.setAttribute('scope', 'row');
+    th.appendChild(document.createTextNode(years[i]));
+    const td = document.createElement('td');
+    td.appendChild(document.createTextNode(values[i]));
+    tr.appendChild(th);
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+  table1.appendChild(table);
+  generateTraces(key, values);
+}
 
-  var layout = {
-    title: `Average daily well-being for ${graphName}`,
+function generateTraces(key, values) {
+  const x = years.length ? years : [];
+  const y = values.length ? values : [];
+
+  traces[key] = {
+    x,
+    y,
+    name: `Profile ${key}`,
+  };
+
+  let localmin = traces.map((trace) => {
+    return 'y' in trace && trace['y'].length
+      ? trace['y'].reduce((prev, curr) => (prev < curr ? prev : curr))
+      : Number.MAX_VALUE;
+  });
+
+  let localmax = traces.map((trace) => {
+    return 'y' in trace && trace['y'].length
+      ? trace['y'].reduce((prev, curr) => (prev > curr ? prev : curr))
+      : Number.MIN_VALUE;
+  });
+
+  let globalmin = localmin.reduce((prev, curr) => (prev < curr ? prev : curr));
+  let globalmax = localmax.reduce((prev, curr) => (prev > curr ? prev : curr));
+
+  const layout = {
+    title: 'Average daily well-being',
 
     xaxis: {
       title: 'Year',
@@ -483,36 +413,55 @@ function plotUnWeighted(key) {
     yaxis: {
       title: 'Value',
       showline: false,
-    },
-    legend: {
-      title: {
-        text: 'Unweighted well-being value',
-      },
+      range: [globalmin - 2, globalmax + 2],
     },
     showlegend: true,
   };
 
-  Plotly.newPlot('unweighted-' + key, traces, layout);
+  Plotly.newPlot('unweighted', traces, layout);
 }
 
-function resetCharts(key) {
-  $('#options-selector-' + key)
-    .empty()
-    .trigger('change');
-  $('#options-selector-' + key)
-    .append(new Option())
-    .trigger('change');
-  $(`.js-example-basic-pf${key}-one`).select2({
+function purgeCharts(key) {
+  traces[key] = {};
+  generateTraces(key, [], '');
+  $(`#options-selector-${key}`).empty().trigger('change');
+  $(`#options-selector-${key}`).append(new Option()).trigger('change');
+  $(`#options-selector-${key}`).select2({
     placeholder: 'Select upto 3 attributes',
     data: options,
   });
-  $('#filters-selector-' + key)
-    .empty()
-    .trigger('change');
-  $('#filters-selector-' + key)
-    .append(new Option())
-    .trigger('change');
-  document.getElementById('selections-' + key).innerHTML = '';
-  $('#main-table-' + key).remove();
-  Plotly.purge('unweighted-' + key);
+  $(`#filters-selector-${key}`).empty().trigger('change');
+  $(`#filters-selector-${key}`).append(new Option()).trigger('change');
+  const selectionsElement = document.getElementById(`selections-${key}`);
+  selectionsElement.innerHTML = '';
+}
+
+function createFilters(key, data) {
+  $(`#filters-selector-${key}`).empty().trigger('change');
+  $(`#filters-selector-${key}`).append(new Option()).trigger('change');
+  filters[data].forEach((filter) => {
+    const option = {
+      id: filter.text,
+      text: filter.text,
+    };
+    const newOption = new Option(option.text, option.id, false, false);
+    $(`#filters-selector-${key}`).append(newOption).trigger('change');
+  });
+}
+
+function removeFilter(id) {
+  const option = id.split('-')[0];
+  const number = id.split('-')[1];
+  delete selections[number][option];
+  const curOption = $(`#options-selector-${number}`).select2('data');
+  if (curOption[0]['text'] === option) {
+    $(`#filters-selector-${number}`).empty().trigger('change');
+    $(`#filters-selector-${number}`).append(new Option()).trigger('change');
+    createFilters(number, curOption[0]['text']);
+  }
+  if (!Object.keys(selections[number]).length) {
+    purgeCharts(number);
+  } else {
+    plotUnWeighted(number);
+  }
 }
