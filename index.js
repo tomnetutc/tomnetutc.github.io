@@ -109,6 +109,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const values = [...grouped_uwb.values()];
     years = [...grouped_uwb.keys()];
+    const counts = [...group_count.values()];
+
+    const tableDiv = document.getElementById('table');
+    const table = document.createElement('table');
+    table.setAttribute('class', 'table');
+    table.setAttribute('id', 'main-table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+    tbody.setAttribute('id', 'table-body');
+    const th1 = document.createElement('th');
+    th1.setAttribute('scope', 'col');
+    th1.appendChild(document.createTextNode('Profile'));
+    thead.appendChild(th1);
+    for (let i = 0; i < years.length; i++) {
+      const th = document.createElement('th');
+      th.setAttribute('scope', 'col');
+      th.appendChild(document.createTextNode(years[i]));
+      thead.appendChild(th);
+    }
+    table.appendChild(thead);
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.appendChild(document.createTextNode('Profile 0'));
+    const downloadButton = document.createElement('button');
+    downloadButton.setAttribute('type', 'button');
+    downloadButton.setAttribute('class', 'btn btn-outline-primary btn-sm m-2');
+    downloadButton.setAttribute('onclick', `downloadDataSet(0)`);
+    downloadButton.appendChild(document.createTextNode('Download'));
+    td.appendChild(downloadButton);
+    tr.appendChild(td);
+    for (let i = 0; i < values.length; i++) {
+      const td = document.createElement('td');
+      td.appendChild(document.createTextNode(counts[i]));
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+    table.appendChild(tbody);
+    tableDiv.appendChild(table);
     generateTraces(0, values);
 
     for (let i = 1; i <= NUMBER_PROFILES; i++) {
@@ -344,35 +382,44 @@ function plotUnWeighted(key) {
   );
   const values = [...grouped_uwb.get(true).values()];
   const counts = [...group_count.get(true).values()];
-  const table1 = document.getElementById('table');
-  $('#main-table-1').remove();
-  const table = document.createElement('table');
-  table.setAttribute('class', 'table');
-  table.setAttribute('id', 'main-table-1');
-  const thead = document.createElement('thead');
-  const tbody = document.createElement('tbody');
-  const th1 = document.createElement('th');
-  th1.setAttribute('scope', 'col');
-  th1.appendChild(document.createTextNode('Year'));
-  const th2 = document.createElement('th');
-  th2.setAttribute('scope', 'col');
-  th2.appendChild(document.createTextNode('Count'));
-  thead.appendChild(th1);
-  thead.appendChild(th2);
-  table.appendChild(thead);
-  for (let i = 0; i < years.length; i++) {
-    const tr = document.createElement('tr');
-    const th = document.createElement('th');
-    th.setAttribute('scope', 'row');
-    th.appendChild(document.createTextNode(years[i]));
+  const tableBody = document.getElementById('table-body');
+  const tableRow = document.getElementById(`table-profile-${key}`);
+  if (tableRow) {
+    let els = [];
     const td = document.createElement('td');
-    td.appendChild(document.createTextNode(values[i]));
-    tr.appendChild(th);
+    td.appendChild(document.createTextNode(`Profile ${key}`));
+    const downloadButton = document.createElement('button');
+    downloadButton.setAttribute('type', 'button');
+    downloadButton.setAttribute('class', 'btn btn-outline-primary btn-sm m-2');
+    downloadButton.setAttribute('onclick', `downloadDataSet(${key})`);
+    downloadButton.appendChild(document.createTextNode('Download'));
+    td.appendChild(downloadButton);
+    els.push(td);
+    for (let i = 0; i < counts.length; i++) {
+      const td = document.createElement('td');
+      td.appendChild(document.createTextNode(counts[i]));
+      els.push(td);
+    }
+    tableRow.replaceChildren(...els);
+  } else {
+    const tr = document.createElement('tr');
+    tr.setAttribute('id', `table-profile-${key}`);
+    const td = document.createElement('td');
+    td.appendChild(document.createTextNode(`Profile ${key}`));
+    const downloadButton = document.createElement('button');
+    downloadButton.setAttribute('type', 'button');
+    downloadButton.setAttribute('class', 'btn btn-outline-primary btn-sm m-2');
+    downloadButton.setAttribute('onclick', `downloadDataSet(${key})`);
+    downloadButton.appendChild(document.createTextNode('Download'));
+    td.appendChild(downloadButton);
     tr.appendChild(td);
-    tbody.appendChild(tr);
+    for (let i = 0; i < counts.length; i++) {
+      const td = document.createElement('td');
+      td.appendChild(document.createTextNode(counts[i]));
+      tr.appendChild(td);
+    }
+    tableBody.appendChild(tr);
   }
-  table.appendChild(tbody);
-  table1.appendChild(table);
   generateTraces(key, values);
 }
 
@@ -433,7 +480,9 @@ function purgeCharts(key) {
   $(`#filters-selector-${key}`).empty().trigger('change');
   $(`#filters-selector-${key}`).append(new Option()).trigger('change');
   const selectionsElement = document.getElementById(`selections-${key}`);
+  const tableRow = document.getElementById(`table-profile-${key}`);
   selectionsElement.innerHTML = '';
+  tableRow.innerHTML = '';
 }
 
 function createFilters(key, data) {
@@ -463,5 +512,30 @@ function removeFilter(id) {
     purgeCharts(number);
   } else {
     plotUnWeighted(number);
+  }
+}
+
+function downloadDataSet(key) {
+  if (key == 0) {
+    const fileName = `profile-${key}`;
+    exportFromJSON({
+      data: globalData,
+      fileName,
+      fields: [],
+      exportType: 'csv',
+    });
+  } else {
+    const group = d3.group(globalData, (d) => {
+      return Object.keys(selections[key])
+        .map((id) => {
+          return d[selections[key][id]['id']] === selections[key][id]['value'];
+        })
+        .reduce((prev, curr) => {
+          return prev && curr;
+        });
+    });
+    const fileName = `profile-${key}`;
+    const data = [...group.get(true).values()];
+    exportFromJSON({ data, fileName, fields: [], exportType: 'csv' });
   }
 }
