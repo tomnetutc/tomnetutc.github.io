@@ -95,6 +95,17 @@ document.addEventListener('DOMContentLoaded', function () {
     selections.push({});
     traces.push({});
 
+    const lastUpdated = document.getElementById('last-updated');
+
+    let dateObj = new Date();
+    const month = dateObj.toLocaleString('default', { month: 'long' });
+    let day = dateObj.getUTCDate();
+    let year = dateObj.getUTCFullYear();
+
+    let curDate = `${month} ${day}, ${year}`;
+
+    lastUpdated.innerHTML = `Updated ${curDate}`;
+
     const grouped_uwb = d3.rollup(
       globalData,
       (v) => d3.mean(v, (d) => d['norm_wb']),
