@@ -38,32 +38,97 @@
     <script src="https://unpkg.com/export-from-json/dist/umd/index.min.js"></script>
   </head>
   <body>
-    <div class="px-4 py-5 my-5 text-center container">
-      <h1 class="display-5 fw-bold">W-Beat</h1>
-      <h6 class="display-6 lead" style="font-size: 28px">
-        A Comprehensive Well-being Analysis Tool
+    <div class="px-4 py-5 my-5 text-center container-lg">
+      <h1 class="display-5 fw-bold">Tracking Wellbeing in Society</h1>
+      <h6 class="display-5 lead" style="font-size: 28px">
+        An Interactive Wellbeing Assessment Tool by TOMNET
       </h6>
-      <span class="text-danger" id="last-updated"></span>
+      <br />
+      <h6 class="display-6 lead" style="font-size: 16px">
+        Measurement of wellbeing is critical for addressing social disparities
+        and promoting equitable and sustainable living. Here we present two
+        wellbeing metrics that are designed to assess how wellbeing has changed
+        over time and place for different population subgroups.
+      </h6>
+      <!-- <span class="text-danger" id="last-updated"></span> -->
+      <br />
       <div class="alert alert-warning mt-3" role="alert">
-        Subjective Well-being Analysis
-      </div>
-      <div class="shadow-sm p-3 mb-5 bg-body rounded">Description here</div>
-      <div class="row" id="profiles">
-        <div class="col-3">
-          <div class="justify-content-md-center">
-            <div class="card border-0" style="width: 18rem">
-              <div class="card-body d-flex flex-column align-items-center">
-                <h5 class="card-title">Profile 0</h5>
-                <h4><span class="badge bg-info">All filters off</span></h4>
+        W-BEAT
+        <br />
+        <br />
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button
+                class="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseOne"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+              >
+                Wellbeing Estimator for Activities and Travel
+              </button>
+            </h2>
+            <div
+              id="collapseOne"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingOne"
+              data-bs-parent="#accordionExample"
+            >
+              <div class="accordion-body">
+                W-BEATs is developed based on the wellbeing modules available in
+                the 2010, 2012, and 2013 editions of the American Time Use
+                Survey (ATUS). It translates time use and activity participation
+                patterns of individuals into wellbeing scores while controlling
+                for their socio-demographic and economic attributes. The
+                estimated scores reflects overall wellbeing of individuals. When
+                these scores are aggregated from person level, they can be used
+                to compare the well-being of one group to that of other groups
+                in the population. More details about the methodology can be
+                found here. The developed W-BEAT model was applied to all
+                editions of American Time Use Survey since 2003. Use the charts
+                below to track and compare how wellbeing evolved over time and
+                space in and across society.
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div id="unweighted" class="chartStyle"></div>
-      <h5 class="text-center">Dataset Size</h5>
-      <div id="table" class="table-responsive"></div>
-      <div id="heatmap"></div>
+      <br />
+      <hr />
+      <div class="row">
+        <div class="col-9">
+          <h3>Wellbeing over the years</h3>
+          <p>
+            The graph below shows the evolution of wellbeing since 2003. The
+            wellbeing average for the entire sample is displayed by default. You
+            can create your own population sub-groups and compare them to the
+            overall average and/or other sub-groups.
+          </p>
+          <div class="row" id="profiles">
+            <div class="col-sm-3 justify-content-sm-center">
+              <div class="card border-0">
+                <div class="card-body d-flex flex-column align-items-center">
+                  <h5 class="card-title">Profile 0</h5>
+                  <h4><span class="badge bg-info">All filters off</span></h4>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="unweighted" class="chartStyle"></div>
+          <h5 class="text-center">Dataset Size</h5>
+          <div id="table" class="table-responsive"></div>
+          <div id="heatmap"></div>
+        </div>
+        <div class="col-3">
+          <h3>Wellbeing within groups</h3>
+          <p>
+            Choose from the select population groups below to view their average
+            wellbeing scores for all years.
+          </p>
+        </div>
+      </div>
     </div>
   </body>
 </html>

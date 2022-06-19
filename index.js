@@ -94,34 +94,26 @@ document.addEventListener('DOMContentLoaded', function () {
     globalData = data;
     selections.push({});
     traces.push({});
-
-    const lastUpdated = document.getElementById('last-updated');
-
-    let dateObj = new Date();
-    const month = dateObj.toLocaleString('default', { month: 'long' });
-    let day = dateObj.getUTCDate();
-    let year = dateObj.getUTCFullYear();
-
-    let curDate = `${month} ${day}, ${year}`;
-
-    lastUpdated.innerHTML = `Updated ${curDate}`;
-
+    // const lastUpdated = document.getElementById('last-updated');
+    // let dateObj = new Date();
+    // const month = dateObj.toLocaleString('default', { month: 'long' });
+    // let day = dateObj.getUTCDate();
+    // let year = dateObj.getUTCFullYear();
+    // let curDate = `${month} ${day}, ${year}`;
+    // lastUpdated.innerHTML = `Updated ${curDate}`;
     const grouped_uwb = d3.rollup(
       globalData,
       (v) => d3.mean(v, (d) => d['norm_wb']),
       (d) => d.year
     );
-
     const group_count = d3.rollup(
       globalData,
       (d) => d.length,
       (d) => d.year
     );
-
     const values = [...grouped_uwb.values()];
     years = [...grouped_uwb.keys()];
     const counts = [...group_count.values()];
-
     const tableDiv = document.getElementById('table');
     const table = document.createElement('table');
     table.setAttribute('class', 'table');
@@ -159,96 +151,75 @@ document.addEventListener('DOMContentLoaded', function () {
     table.appendChild(tbody);
     tableDiv.appendChild(table);
     generateTraces(0, values);
-
     for (let i = 1; i <= NUMBER_PROFILES; i++) {
       selections.push({});
       traces.push({});
       const colDiv = document.createElement('div');
       colDiv.setAttribute('class', 'col-3 justify-content-md-center');
-
       const cardDiv = document.createElement('div');
       cardDiv.setAttribute('class', 'card border-0');
-
+      // cardDiv.setAttribute('style', 'width: 16rem');
       colDiv.appendChild(cardDiv);
-
       const cardBody = document.createElement('div');
       cardBody.setAttribute(
         'class',
         'card-body d-flex flex-column align-items-center'
       );
-
       cardDiv.appendChild(cardBody);
-
       const title = document.createElement('h5');
       title.setAttribute('class', 'card-title');
       title.appendChild(document.createTextNode(`Profile ${i}`));
-
       const createButton = document.createElement('button');
       createButton.setAttribute('class', 'btn btn-primary w-100');
       createButton.setAttribute('onclick', `createProfile(${i})`);
       createButton.setAttribute('id', `create-profile-btn-${i}`);
       createButton.appendChild(document.createTextNode('Create'));
-
       const optionsDiv = document.createElement('div');
       optionsDiv.setAttribute('id', `profile-options-${i}`);
       optionsDiv.setAttribute(
         'class',
         'd-flex flex-column align-items-center invisible w-100 gap-3 stylePosition'
       );
-
       const optionsSelector = document.createElement('select');
       optionsSelector.setAttribute('id', `options-selector-${i}`);
       optionsSelector.setAttribute('class', 'w-100 my-3');
-
       const filtersSelector = document.createElement('select');
       filtersSelector.setAttribute('id', `filters-selector-${i}`);
       filtersSelector.setAttribute('class', 'w-100');
-
       const blankOption = document.createElement('option');
       blankOption.setAttribute('value', '');
-
       filtersSelector.appendChild(blankOption);
-
       const removeButton = document.createElement('button');
       removeButton.setAttribute('class', 'btn btn-primary w-100');
       removeButton.setAttribute('onclick', `removeProfile(${i})`);
       removeButton.setAttribute('id', `remove-profile-btn-${i}`);
       removeButton.appendChild(document.createTextNode('Remove'));
-
       const selectionsDiv = document.createElement('div');
       selectionsDiv.setAttribute('id', `selections-${i}`);
       selectionsDiv.setAttribute(
         'class',
         'd-flex justify-content-around flex-wrap'
       );
-
       optionsDiv.appendChild(optionsSelector);
       optionsDiv.appendChild(filtersSelector);
       optionsDiv.appendChild(removeButton);
       optionsDiv.appendChild(selectionsDiv);
-
       cardBody.appendChild(title);
       cardBody.appendChild(createButton);
       cardBody.appendChild(optionsDiv);
-
       const profilesDiv = document.getElementById('profiles');
       profilesDiv.appendChild(colDiv);
-
       $(`#options-selector-${i}`).select2({
         placeholder: 'Select upto 3 attributes',
         data: options,
       });
-
       optionsSelector.appendChild(blankOption);
-
       $(`#filters-selector-${i}`).select2({
         placeholder: 'Select a level',
       });
-
       $(`#options-selector-${i}`).on('select2:select', function (e) {
         createFilters(i, e.params.data['text']);
       });
-
       $(`#filters-selector-${i}`).on('select2:select', function (e) {
         const type = $(`#options-selector-${i}`).select2('data');
         const data = e.params.data;
@@ -277,7 +248,6 @@ document.addEventListener('DOMContentLoaded', function () {
           );
           alertDiv.setAttribute('role', 'alert');
           alertDiv.innerText = data.text;
-
           selectionsElement.appendChild(alertDiv);
           let alertButton = document.createElement('button');
           alertButton.setAttribute('type', 'button');
@@ -298,7 +268,6 @@ document.addEventListener('DOMContentLoaded', function () {
         plotUnWeighted(i);
       });
     }
-
     plotHeatMap(data);
   });
 });
