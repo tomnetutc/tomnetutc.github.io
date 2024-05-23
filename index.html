@@ -1,134 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>W-Beat</title>
-    <script
-      src="https://code.jquery.com/jquery-3.6.0.js"
-      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.4.0/d3.js"
-      integrity="sha512-+rq2a+qVaDPpRiWtjSDMUSGGm2uImrhWyFYKj6moRezSOa9lTIgzOoIEBr7RWBfeYlRmL73xV4bpBoaH8xKKkA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-      crossorigin="anonymous"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
-      integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="index.js"></script>
-    <script src="https://unpkg.com/export-from-json/dist/umd/index.min.js"></script>
-  </head>
-  <body>
-    <div class="px-4 py-5 my-5 text-center container-lg">
-      <h1 class="display-5 fw-bold">Tracking Wellbeing in Society</h1>
-      <h6 class="display-5 lead" style="font-size: 28px">
-        An Interactive Wellbeing Assessment Tool by TOMNET
-      </h6>
-      <br />
-      <h6 class="display-6 lead" style="font-size: 16px">
-        Measurement of wellbeing is critical for addressing social disparities
-        and promoting equitable and sustainable living. Here we present two
-        wellbeing metrics that are designed to assess how wellbeing has changed
-        over time and place for different population subgroups.
-      </h6>
-      <!-- <span class="text-danger" id="last-updated"></span> -->
-      <br />
-      <div class="alert alert-warning mt-3" role="alert">
-        W-BEAT
-        <br />
-        <br />
-        <div class="accordion" id="accordionExample">
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="headingOne">
-              <button
-                class="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#collapseOne"
-                aria-expanded="true"
-                aria-controls="collapseOne"
-              >
-                Wellbeing Estimator for Activities and Travel
-              </button>
-            </h2>
-            <div
-              id="collapseOne"
-              class="accordion-collapse collapse"
-              aria-labelledby="headingOne"
-              data-bs-parent="#accordionExample"
-            >
-              <div class="accordion-body">
-                W-BEATs is developed based on the wellbeing modules available in
-                the 2010, 2012, and 2013 editions of the American Time Use
-                Survey (ATUS). It translates time use and activity participation
-                patterns of individuals into wellbeing scores while controlling
-                for their socio-demographic and economic attributes. The
-                estimated scores reflects overall wellbeing of individuals. When
-                these scores are aggregated from person level, they can be used
-                to compare the well-being of one group to that of other groups
-                in the population. More details about the methodology can be
-                found here. The developed W-BEAT model was applied to all
-                editions of American Time Use Survey since 2003. Use the charts
-                below to track and compare how wellbeing evolved over time and
-                space in and across society.
-              </div>
-            </div>
-          </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOMNET UTC</title>
+  <link rel="icon" href="./assets/Icon.webp" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="mediaqueries.css" />
+</head>
+
+<body>
+  <nav id="desktop-nav">
+    <div class="logo"><a href="#">TOMNET UTC</a></div>
+    <div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <!-- <li><a href="#experience">Team</a></li> -->
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+  <nav id="hamburger-nav">
+    <div class="logo">TOMNET UTC</div>
+    <div class="hamburger-menu">
+      <div class="hamburger-icon" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="menu-links">
+        <li><a href="#about" onclick="toggleMenu()">About</a></li>
+        <li><a href="#experience" onclick="toggleMenu()">Team</a></li>
+        <li><a href="#projects" onclick="toggleMenu()">Projects</a></li>
+        <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
+      </div>
+    </div>
+  </nav>
+  <section id="profile">
+    <div class="section__content">
+      <div class="section__title_pic-container">
+        <img src="./assets/tomnet.png" alt="TOMNET UTC Logo" />
+      </div>
+      <div class="section__text">
+        <p class="section__text__p1">Hello!</p>
+        <h2 class="title">Welcome to the TOMNET GitHub Page</h2>
+        <p class="section__text__p2">Center for Teaching Old Models New Tricks</p>
+        <div class="btn-container">
+          <!-- <button class="btn btn-color-2" onclick="window.open('./assets/resume-example.pdf')">Download CV</button> -->
+          <button class="btn btn-color-1" onclick="location.href='./#contact'">Contact Info</button>
+        </div>
+        <div id="socials-container">
+          <!-- <img src="./assets/web-icon.png" alt="TOMNET page" class="icon"
+            onclick="window.open('https://tomnet-utc.engineering.asu.edu/', '_blank')" /> -->
+          <img src="./assets/github.png" alt="Our Github profile" class="icon"
+            onclick="window.open('https://github.com/tomnetutc', '_blank')" />
         </div>
       </div>
-      <br />
-      <hr />
-      <div class="row">
-        <div class="col-9">
-          <h3>Wellbeing over the years</h3>
-          <p>
-            The graph below shows the evolution of wellbeing since 2003. The
-            wellbeing average for the entire sample is displayed by default. You
-            can create your own population sub-groups and compare them to the
-            overall average and/or other sub-groups.
-          </p>
-          <div class="row" id="profiles">
-            <div class="col-sm-3 justify-content-sm-center">
-              <div class="card border-0">
-                <div class="card-body d-flex flex-column align-items-center">
-                  <h5 class="card-title">Profile 0</h5>
-                  <h4><span class="badge bg-info">All filters off</span></h4>
-                </div>
-              </div>
-            </div>
+    </div>
+  </section>
+  <section id="about">
+    <p class="section__text__p1">Get To Know More</p>
+    <h1 class="title">About The Page</h1>
+    <div class="section-container">
+      <div class="about-details-container">
+        <!-- <div class="about-containers">
+          <div class="details-container">
+            <img src="./assets/experience.png" alt="Experience icon" class="icon" />
+            <h3>Experience</h3>
+            <p>2+ years <br />Frontend Development</p>
           </div>
-          <div id="unweighted" class="chartStyle"></div>
-          <h5 class="text-center">Dataset Size</h5>
-          <div id="table" class="table-responsive"></div>
-          <div id="heatmap"></div>
-        </div>
-        <div class="col-3">
-          <h3>Wellbeing within groups</h3>
-          <p>
-            Choose from the select population groups below to view their average
-            wellbeing scores for all years.
+          <div class="details-container">
+            <img src="./assets/education.png" alt="Education icon" class="icon" />
+            <h3>Education</h3>
+            <p>B.Sc. Bachelors Degree<br />M.Sc. Masters Degree</p>
+          </div>
+        </div> -->
+        <div class="text-container">
+          <p style="font-size: 1.5rem; text-align: justify;">
+            The TOMNET Center's GitHub repository provides access to a range of data, tools, and software products
+            developed by researchers at the TOMNET University Transportation Center. Our center is committed to
+            advancing transportation research and making our findings accessible. We support the open-source community
+            by sharing resources that are crucial for understanding and predicting transportation trends and behaviors.
+            Here, you can find our latest open-source tools and data, which are available for educational and research
+            purposes.
           </p>
         </div>
       </div>
     </div>
-  </body>
+    <img src="./assets/arrow.png" alt="Arrow icon" class="icon arrow" onclick="location.href='./#projects'" />
+  </section>
+  <!-- <section id="experience">
+    <p class="section__text__p1">Explore Our</p>
+    <h1 class="title">Current Team</h1>
+    <div class="experience-details-container">
+      <div class="about-containers">
+        <div class="details-container">
+          <h2 class="experience-sub-title">Frontend Development</h2>
+          <div class="article-container">
+            <article>
+              <img src="./assets/checkmark.png" alt="Experience icon" class="icon" />
+              <div>
+                <h3>HTML</h3>
+                <p>Experienced</p>
+              </div>
+            </article>
+            <article>
+              <img src="./assets/checkmark.png" alt="Experience icon" class="icon" />
+              <div>
+                <h3>CSS</h3>
+                <p>Experienced</p>
+              </div>
+            </article>
+            <article>
+              <img src="./assets/checkmark.png" alt="Experience icon" class="icon" />
+              <div>
+                <h3>SASS</h3>
+                <p>Intermediate</p>
+              </div>
+            </article>
+            <article>
+              <img src="./assets/checkmark.png" alt="Experience icon" class="icon" />
+              <div>
+                <h3>JavaScript</h3>
+                <p>Basic</p>
+              </div>
+            </article>
+            <article>
+              <img src="./assets/checkmark.png" alt="Experience icon" class="icon" />
+              <div>
+                <h3>TypeScript</h3>
+                <p>Basic</p>
+              </div>
+            </article>
+            <article>
+              <img src="./assets/checkmark.png" alt="Experience icon" class="icon" />
+              <div>
+                <h3>Material UI</h3>
+                <p>Intermediate</p>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="details-container">
+          <h2 class="experience-sub-title">Frontend Development</h2>
+          <div class="article-container">
+            <article>
+              <img src="./assets/checkmark.png" alt="Experience icon" class="icon" />
+              <div>
+                <h3>PostgreSQL</h3>
+                <p>Basic</p>
+              </div>
+            </article>
+            <article>
+              <img src="./assets/checkmark.png" alt="Experience icon" class="icon" />
+              <div>
+                <h3>Node JS</h3>
+                <p>Intermediate</p>
+              </div>
+            </article>
+            <article>
+              <img src="./assets/checkmark.png" alt="Experience icon" class="icon" />
+              <div>
+                <h3>Express JS</h3>
+                <p>Intermediate</p>
+              </div>
+            </article>
+            <article>
+              <img src="./assets/checkmark.png" alt="Experience icon" class="icon" />
+              <div>
+                <h3>Git</h3>
+                <p>Intermediate</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+    <img src="./assets/arrow.png" alt="Arrow icon" class="icon arrow" onclick="location.href='./#projects'" />
+  </section> -->
+  <section id="projects">
+    <p class="section__text__p1">Browse Our Recent</p>
+    <h1 class="title">Projects</h1>
+    <div class="experience-details-container">
+      <div class="about-containers">
+        <div class="details-container color-container">
+          <div class="article-container">
+            <img src="./assets/T3D.png" alt="Project 1" class="project-img" />
+          </div>
+          <h2 class="experience-sub-title project-title">Time Use, Travel, and Telework Dashboard (T3D)</h2>
+          <div class="btn-container">
+            <button class="btn btn-color-2 project-btn"
+              onclick="window.open('https://github.com/tomnetutc/t3d/', '_blank')">
+              Github
+            </button>
+            <button class="btn btn-color-2 project-btn"
+              onclick="window.open('https://tomnetutc.github.io/t3d/', '_blank')">
+              Live Demo
+            </button>
+          </div>
+        </div>
+        <div class="details-container color-container">
+          <div class="article-container">
+            <img src="./assets/wellbeing.png" alt="Project 2" class="project-img" />
+          </div>
+          <h2 class="experience-sub-title project-title">TOMNET Wellbeing Platform</h2>
+          <div class="btn-container">
+            <button class="btn btn-color-2 project-btn"
+              onclick="window.open('https://github.com/tomentutc/wellbeing/', '_blank')">
+              Github
+            </button>
+            <button class="btn btn-color-2 project-btn"
+              onclick="window.open('https://tomnetutc.github.io/wellbeing', '_blank')">
+              Live Demo
+            </button>
+          </div>
+        </div>
+        <div class="details-container color-container">
+          <div class="article-container">
+            <img src="./assets/Popgen.png" alt="Popgen" class="project-img" />
+          </div>
+          <h2 class="experience-sub-title project-title">PopGen Population Synthesizer</h2>
+          <div class="btn-container">
+            <button class="btn btn-color-2 project-btn"
+              onclick="window.open('https://github.com/tomnetutc/PopGen3', '_blank')">
+              Github
+            </button>
+            <!-- <button class="btn btn-color-2 project-btn" onclick="location.href='https://github.com/'">
+              Live Demo
+            </button> -->
+          </div>
+        </div>
+      </div>
+      <div class="contact-info-container">
+
+        <p>For more projects, visit our <a href="https://github.com/tomnetutc">GitHub</a></p>
+      </div>
+    </div>
+    <img src="./assets/arrow.png" alt="Arrow icon" class="icon arrow" onclick="location.href='./#contact'" />
+  </section>
+  <section id="contact">
+    <p class="section__text__p1">Get in Touch</p>
+    <h1 class="title">Contact Us</h1>
+    <div class="contact-info-upper-container">
+      <div class="contact-info-container">
+        <img src="./assets/email.png" alt="Email icon" class="icon contact-icon email-icon" />
+        <p>Dr. Irfan Batur <a href="mailto:examplemail@gmail.com">ibatur@asu.edu</a></p>
+      </div>
+      <!-- <div class="contact-info-container">
+        <img src="./assets/github.png" alt="Github icon" class="icon contact-icon" />
+        <p><a href="https://github.com/tomnetutc">GitHub</a></p>
+      </div> -->
+    </div>
+  </section>
+  <footer>
+    <nav>
+      <div class="nav-links-container">
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <!-- <li><a href="#experience">Team</a></li> -->
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+    <p>Copyright &#169; 2024 TOMNET UTC. All Rights Reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
 </html>
